@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>鸣鸣和萱萱的小世界 · 持续音乐版</title>
+  <meta name="description" content="顶部固定播放器 + iframe 内容区，切换页面音乐不打断。">
+  <!-- 复用你现有的样式，如果你的 style.css 在根目录，这里会直接生效 -->
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* 适配：让现有 .nav 风格继续生效 */
+    body{margin:0;background:linear-gradient(135deg,#f6d2ea,#d2baf8);color:#fff;font-family:'Noto Sans SC',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.08);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.15)}
+    .wrap{max-width:1100px;margin:0 auto;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{font-weight:900;text-decoration:none;color:#fff;white-space:nowrap}
+    .nav{display:flex;gap:12px;flex-wrap:wrap}
+    .nav a{color:#fff;text-decoration:none;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.18)}
+    .nav a:hover{background:rgba(255,255,255,.32)}
+    .music{display:flex;align-items:center;gap:8px}
+    .music button{border:0;border-radius:999px;padding:8px 12px;background:#ff6ea3;color:#fff;box-shadow:0 8px 24px rgba(255,110,163,.4);cursor:pointer}
+    .music button:hover{filter:brightness(1.06)}
+    .content{height:calc(100vh - 62px)}
+    .content iframe{width:100%;height:100%;border:0;display:block;background:transparent}
+  </style>
+</head>
+<body>
+  <!-- 顶部：品牌 + 导航 + 固定音乐播放器 -->
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="#home" data-route="index.html">♡ 鸣鸣和萱萱的小世界 ♡</a>
+      <nav class="nav">
+        <a href="#home" data-route="index.html">首页</a>
+        <a href="#album" data-route="album.html">相册</a>
+        <a href="#game" data-route="game.html">小游戏</a>
+        <a href="#message" data-route="message.html">留言</a>
+      </nav>
+      <div class="music">
+        <span id="song">🎵 背景音乐</span>
+        <button id="play">▶︎ 播放</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 固定播放器（不随页面更换而销毁） -->
+  <audio id="bgm" src="assets/bgm.mp3" loop preload="none"></audio>
+
+  <!-- 内容区域，用 iframe 承载各个页面 -->
+  <main class="content">
+    <iframe id="view" name="content" src="" allow="autoplay"></iframe>
+  </main>
+
+  <script>
+    // ===== 路由逻辑：点击导航只更新 iframe，不刷新整个页面 =====
+    const view = document.getElementById('view');
+    const links = document.querySelectorAll('[data-route]');
+
+    function loadByHash(){
+      const hash = location.hash.replace('#','') || 'home';
+      const map = {home:'index.html', album:'album.html', game:'game.html', message:'message.html'};
+      const target = map[hash] || 'index.html';
+      view.src = target;
+    }
+    links.forEach(a=> a.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const route = a.getAttribute('data-route');
+      // 修改 hash，触发 loadByHash
+      const key = { 'index.html':'home', 'album.html':'album', 'game.html':'game', 'message.html':'message' }[route] || 'home';
+      location.hash = key;
+    }));
+
+    window.addEventListener('hashchange', loadByHash);
+    loadByHash();
+
+    // ===== 音乐控制：保持同一个 <audio> 元素始终存在 =====
+    const bgm = document.getElementById('bgm');
+    const btn = document.getElementById('play');
+    function setBtn(paused){ btn.textContent = paused ? '▶︎ 播放' : '⏸ 暂停'; }
+    btn.addEventListener('click', async ()=>{
+      try{
+        if (bgm.paused){ await bgm.play(); setBtn(false); }
+        else { bgm.pause(); setBtn(true); }
+      }catch(e){ alert('请先点击一次页面再播放音乐~'); }
+    });
+    setBtn(true);
+
+    // 若你希望进入页面就自动尝试播放（有的浏览器会拦截）
+    document.addEventListener('DOMContentLoaded', async ()=>{
+      try{ await bgm.play(); setBtn(false); }catch(e){ /* 等用户手动点击 */ }
+    });
+  </script>
+</body>
+</html>
