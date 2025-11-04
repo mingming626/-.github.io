@@ -4,58 +4,104 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>鸣鸣和萱萱的小世界</title>
-  <meta name="description" content="我们的照片、小游戏与留言墙">
+  <meta name="description" content="我们的纪念日与生日倒计时，可爱的爱心特效与背景音乐。">
   <link rel="stylesheet" href="style.css">
-  
 </head>
 <body>
-  
-<nav class="nav">
-  <a href="index.html" class="brand">♡ 鸣鸣和萱萱的小世界 ♡</a>
-  <div class="links">
-    <a href="album.html">相册</a>
-    <a href="game.html">小游戏</a>
-    <a href="message.html">留言</a>
-  </div>
-</nav>
+  <audio id="bgm" src="assets/bgm.mp3" loop preload="none"></audio>
+  <button id="musicToggle" class="music-btn" aria-label="播放/暂停音乐">▶︎ 音乐</button>
 
-  
-<header class="hero">
-  <div class="hero-inner">
-    <h1>鸣鸣和萱萱的小世界</h1>
+  <div class="container">
+    <div id="together" class="timer"></div>
+    <div id="birthday" class="timer"></div>
+
+    <h1>💖 鸣鸣和萱萱的小世界 💖</h1>
     <p class="subtitle">欢迎来到我们的浪漫小宇宙 ✨</p>
-    <div class="cta-row">
-      <a class="btn primary" href="album.html">进入相册</a>
-      <a class="btn" href="game.html">玩小游戏</a>
-      <a class="btn" href="message.html">写留言</a>
-    </div>
-    <div class="music">
-      <button id="playMusic" class="btn small">▶︎ 播放/暂停 背景音乐（许嵩《素颜》）</button>
-      <audio id="bgm" src="assets/bgm.mp3" loop preload="none"></audio>
-      <p class="muted tip">提示：首次进入网页时可能需要手动点击按钮播放。</p>
-    </div>
+
+    <nav class="nav">
+      <a href="album.html">相册</a>
+      <a href="game.html">小游戏</a>
+      <a href="message.html">留言</a>
+    </nav>
   </div>
-  <div class="hearts" aria-hidden="true"></div>
-</header>
 
-<section class="container cards">
-  <article class="card">
-    <h3>我们的故事</h3>
-    <p>记录每一次相遇与心动，愿平凡日子都闪光。</p>
-  </article>
-  <article class="card">
-    <h3>相册</h3>
-    <p>把照片放到 <code>assets/photos/</code>，相册会自动显示。</p>
-  </article>
-  <article class="card">
-    <h3>小游戏</h3>
-    <p>「小骑士拯救公主」—— 打败小恶魔亲吻公主，99 条暖心话填满屏幕。</p>
-  </article>
-</section>
+  <canvas id="hearts"></canvas>
 
-  <footer class="footer">
-    <p>© 2025 鸣鸣和萱萱的小世界 · 由鸣鸣 & 萱萱制作</p>
-  </footer>
-  <script src="scripts.js"></script>
+  <script>
+  const ANNIV = new Date('2020-05-20T00:00:00');
+  const BIRTH_MM = 12, BIRTH_DD = 27;
+  function pad(n){ return n.toString().padStart(2,'0'); }
+  function updateTimers(){
+    const now = new Date();
+    let diff = now - ANNIV;
+    let years = Math.floor(diff / (1000*60*60*24*365));
+    let days = Math.floor((diff / (1000*60*60*24)) % 365);
+    let hours = Math.floor((diff / (1000*60*60)) % 24);
+    let mins = Math.floor((diff / (1000*60)) % 60);
+    let secs = Math.floor((diff / 1000) % 60);
+    document.getElementById('together').innerHTML =
+      `我们已经在一起<br><b>${years}</b> 年 <b>${days}</b> 天 <b>${pad(hours)}</b> 小时 <b>${pad(mins)}</b> 分 <b>${pad(secs)}</b> 秒`;
+
+    let nextBD = new Date(now.getFullYear(), BIRTH_MM-1, BIRTH_DD, 0, 0, 0);
+    if (now > nextBD) nextBD.setFullYear(now.getFullYear()+1);
+    let bdiff = nextBD - now;
+    if (bdiff <= 0){
+      document.getElementById('birthday').innerHTML = '🎂 今天是萱萱的生日！生日快乐！🎉';
+    } else {
+      let d = Math.floor(bdiff / (1000*60*60*24));
+      let h = Math.floor((bdiff / (1000*60*60)) % 24);
+      let m = Math.floor((bdiff / (1000*60)) % 60);
+      let s = Math.floor((bdiff / 1000) % 60);
+      document.getElementById('birthday').innerHTML =
+        `距离萱萱生日还有<br><b>${d}</b> 天 <b>${pad(h)}</b> 小时 <b>${pad(m)}</b> 分 <b>${pad(s)}</b> 秒`;
+    }
+  }
+  setInterval(updateTimers, 1000); updateTimers();
+
+  const bgm = document.getElementById('bgm');
+  const btn = document.getElementById('musicToggle');
+  function setBtn(paused){ btn.textContent = paused ? '▶︎ 音乐' : '⏸ 音乐'; }
+  btn.addEventListener('click', async ()=>{
+    try{
+      if (bgm.paused){ await bgm.play(); setBtn(false); }
+      else { bgm.pause(); setBtn(true); }
+    }catch(e){ alert('请先与页面交互一次再播放音乐~'); }
+  });
+  setBtn(true);
+
+  const cvs = document.getElementById('hearts');
+  const ctx = cvs.getContext('2d');
+  function resize(){ cvs.width = innerWidth; cvs.height = innerHeight; }
+  addEventListener('resize', resize); resize();
+  class Heart{
+    constructor(){ this.reset(true); }
+    reset(init=false){
+      this.x = Math.random()*cvs.width;
+      this.y = init ? Math.random()*cvs.height : cvs.height+20;
+      this.size = 6 + Math.random()*8;
+      this.speedY = 0.4 + Math.random()*0.8;
+      this.alpha = 0.35 + Math.random()*0.4;
+      this.wobble = Math.random()*6.28;
+      this.wSpeed = 0.01 + Math.random()*0.02;
+    }
+    step(){ this.y -= this.speedY; this.x += Math.sin(this.wobble)*0.4; this.wobble += this.wSpeed; if(this.y < -20) this.reset(); }
+    draw(){ const s=this.size; ctx.beginPath(); ctx.fillStyle = `rgba(255,120,170,${this.alpha})`;
+      ctx.moveTo(this.x,this.y);
+      ctx.bezierCurveTo(this.x-s,this.y-s,this.x-2*s,this.y+s*0.3,this.x,this.y+s);
+      ctx.bezierCurveTo(this.x+2*s,this.y+s*0.3,this.x+s,self.y-s,this.x,this.y); // Intentional bug fix below
+      ctx.fill();
+    }
+  }
+  // fix small typo
+  Heart.prototype.draw = function(){ const s=this.size; ctx.beginPath(); ctx.fillStyle = `rgba(255,120,170,${this.alpha})`;
+    ctx.moveTo(this.x,this.y);
+    ctx.bezierCurveTo(this.x-s,this.y-s,this.x-2*s,this.y+s*0.3,this.x,this.y+s);
+    ctx.bezierCurveTo(this.x+2*s,this.y+s*0.3,this.x+s,this.y-s,this.x,this.y);
+    ctx.fill();
+  }
+  const hearts = Array.from({length:80}, ()=> new Heart());
+  function loop(){ ctx.clearRect(0,0,cvs.width,cvs.height); hearts.forEach(h=>{h.step(); h.draw();}); requestAnimationFrame(loop); }
+  loop();
+  </script>
 </body>
 </html>
