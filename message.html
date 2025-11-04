@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>鸣鸣和萱萱的小世界</title>
+  <meta name="description" content="我们的照片、小游戏与留言墙">
+  <link rel="stylesheet" href="style.css">
+  
+</head>
+<body>
+  
+<nav class="nav">
+  <a href="index.html" class="brand">♡ 鸣鸣和萱萱的小世界 ♡</a>
+  <div class="links">
+    <a href="album.html">相册</a>
+    <a href="game.html">小游戏</a>
+    <a href="message.html">留言</a>
+  </div>
+</nav>
+
+  
+<main class="container">
+  <h2>留言墙</h2>
+  <p class="muted">轻量留言板（保存在浏览器）。如需云端表单，可以换成 Formspree 或 Google 表单。</p>
+  <form id="msgForm" class="card form">
+    <label>你的名字
+      <input id="name" required placeholder="例如：鸣鸣">
+    </label>
+    <label>想说的话
+      <textarea id="content" rows="4" required placeholder="写下对萱萱/菲菲的话～"></textarea>
+    </label>
+    <button class="btn primary" type="submit">发布留言</button>
+  </form>
+  <div id="board" class="board"></div>
+</main>
+<script>
+const KEY='couple_msgs_v1';
+function load(){ try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []} }
+function save(list){ localStorage.setItem(KEY, JSON.stringify(list)); }
+function render(){
+  const list = load();
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+  list.slice().reverse().forEach(item=>{
+    const div = document.createElement('div');
+    div.className='msg';
+    div.innerHTML = `<div class="msg-head"><b>${item.name||'匿名'}</b><span>${item.time}</span></div>
+                     <p>${item.content.replace(/[<>]/g,'')}</p>`;
+    board.appendChild(div);
+  });
+}
+document.getElementById('msgForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const name = document.getElementById('name').value.trim();
+  const content = document.getElementById('content').value.trim();
+  if(!content) return;
+  const list = load();
+  const t = new Date();
+  list.push({name, content, time: t.toLocaleString()});
+  save(list);
+  e.target.reset();
+  render();
+});
+document.addEventListener('DOMContentLoaded', render);
+</script>
+
+  <footer class="footer">
+    <p>© 2025 鸣鸣和萱萱的小世界 · 由鸣鸣 & 萱萱制作</p>
+  </footer>
+  <script src="scripts.js"></script>
+</body>
+</html>

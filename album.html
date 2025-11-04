@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>鸣鸣和萱萱的小世界</title>
+  <meta name="description" content="我们的照片、小游戏与留言墙">
+  <link rel="stylesheet" href="style.css">
+  
+</head>
+<body>
+  
+<nav class="nav">
+  <a href="index.html" class="brand">♡ 鸣鸣和萱萱的小世界 ♡</a>
+  <div class="links">
+    <a href="album.html">相册</a>
+    <a href="game.html">小游戏</a>
+    <a href="message.html">留言</a>
+  </div>
+</nav>
+
+  
+<main class="container">
+  <h2>我们的相册</h2>
+  <p class="muted">把照片放到 <code>assets/photos/</code> 文件夹，这个页面会自动显示。示例图片已放 3 张。</p>
+  <div class="gallery" id="gallery"></div>
+</main>
+<script>
+document.addEventListener('DOMContentLoaded', ()=>{
+  const imgs = ['assets/photos/photo1.jpg','assets/photos/photo2.jpg','assets/photos/photo3.jpg'];
+  const g = document.getElementById('gallery');
+  imgs.forEach(src=>{
+    const a = document.createElement('a');
+    a.href = src; a.target="_blank"; a.className="g-item";
+    const img = document.createElement('img'); img.src = src; img.alt = "我们的照片";
+    a.appendChild(img); g.appendChild(a);
+  });
+});
+</script>
+
+  <footer class="footer">
+    <p>© 2025 鸣鸣和萱萱的小世界 · 由鸣鸣 & 萱萱制作</p>
+  </footer>
+  <script src="scripts.js"></script>
+</body>
+</html>

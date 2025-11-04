@@ -3,78 +3,59 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>小骑士拯救公主 · 游戏主页</title>
-  <meta name="description" content="一款轻松可爱的像素风小游戏：小骑士击败恶魔，拯救公主，最后用 99 条暖心话填满屏幕。">
+  <title>鸣鸣和萱萱的小世界</title>
+  <meta name="description" content="我们的照片、小游戏与留言墙">
   <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+  
 </head>
 <body>
-  <header class="hero">
-    <div class="hero-inner">
-      <h1>小骑士拯救公主</h1>
-      <p class="subtitle">打败小恶魔，亲吻公主，99 条暖心话铺满屏幕 💗</p>
-      <div class="cta-row">
-        <a class="btn primary" href="./downloads/knight_game.zip">下载游戏（Windows）</a>
-        <a class="btn" href="#how">如何运行</a>
-      </div>
+  
+<nav class="nav">
+  <a href="index.html" class="brand">♡ 鸣鸣和萱萱的小世界 ♡</a>
+  <div class="links">
+    <a href="album.html">相册</a>
+    <a href="game.html">小游戏</a>
+    <a href="message.html">留言</a>
+  </div>
+</nav>
+
+  
+<header class="hero">
+  <div class="hero-inner">
+    <h1>鸣鸣和萱萱的小世界</h1>
+    <p class="subtitle">欢迎来到我们的浪漫小宇宙 ✨</p>
+    <div class="cta-row">
+      <a class="btn primary" href="album.html">进入相册</a>
+      <a class="btn" href="game.html">玩小游戏</a>
+      <a class="btn" href="message.html">写留言</a>
     </div>
-    <div class="hearts" aria-hidden="true"></div>
-  </header>
+    <div class="music">
+      <button id="playMusic" class="btn small">▶︎ 播放/暂停 背景音乐（许嵩《素颜》）</button>
+      <audio id="bgm" src="assets/bgm.mp3" loop preload="none"></audio>
+      <p class="muted tip">提示：首次进入网页时可能需要手动点击按钮播放。</p>
+    </div>
+  </div>
+  <div class="hearts" aria-hidden="true"></div>
+</header>
 
-  <main class="container">
-    <section class="cards">
-      <article class="card">
-        <h3>浪漫童话风</h3>
-        <p>粉金渐变与柔光云朵，呼吸动画的人物立绘，配上击杀与亲吻音效。</p>
-      </article>
-      <article class="card">
-        <h3>轻松上手</h3>
-        <p>方向键移动，碰触恶魔消灭，靠近公主触发彩蛋，用 F11 切换全屏。</p>
-      </article>
-      <article class="card">
-        <h3>暖心彩蛋</h3>
-        <p>通关后，99 条不重复的中文暖心话一条条跳出，填满整个屏幕。</p>
-      </article>
-    </section>
-
-    <section id="how">
-      <h2>如何运行</h2>
-      <ol>
-        <li>安装 <code>Python 3.11+</code> 和 <code>pygame</code>（命令：<code>pip install pygame</code>）。</li>
-        <li>把游戏文件解压到任意文件夹，双击或执行 <code>python knight_love_game.py</code>。</li>
-        <li>遇到字体问题，请把 <code>NotoSansSC-Regular.ttf</code> 放在脚本同目录。</li>
-      </ol>
-    </section>
-
-    <section>
-      <h2>截图预览</h2>
-      <div class="gallery">
-        <img src="assets/screen1.jpg" alt="游戏截图 1（占位）">
-        <img src="assets/screen2.jpg" alt="游戏截图 2（占位）">
-        <img src="assets/screen3.jpg" alt="游戏截图 3（占位）">
-      </div>
-    </section>
-  </main>
+<section class="container cards">
+  <article class="card">
+    <h3>我们的故事</h3>
+    <p>记录每一次相遇与心动，愿平凡日子都闪光。</p>
+  </article>
+  <article class="card">
+    <h3>相册</h3>
+    <p>把照片放到 <code>assets/photos/</code>，相册会自动显示。</p>
+  </article>
+  <article class="card">
+    <h3>小游戏</h3>
+    <p>「小骑士拯救公主」—— 打败小恶魔亲吻公主，99 条暖心话填满屏幕。</p>
+  </article>
+</section>
 
   <footer class="footer">
-    <p>© 2025 小骑士拯救公主 · 由家驹与芷姐姐倾情制作</p>
+    <p>© 2025 鸣鸣和萱萱的小世界 · 由鸣鸣 & 萱萱制作</p>
   </footer>
-
-  <script>
-  // 生成飘动的爱心
-  const hearts = document.querySelector('.hearts');
-  function spawnHeart(){
-    const h = document.createElement('div');
-    h.className = 'heart';
-    h.style.left = Math.random()*100 + '%';
-    h.style.animationDuration = (4 + Math.random()*3) + 's';
-    h.style.opacity = 0.6 + Math.random()*0.4;
-    hearts.appendChild(h);
-    setTimeout(()=>h.remove(), 8000);
-  }
-  setInterval(spawnHeart, 500);
-  </script>
+  <script src="scripts.js"></script>
 </body>
 </html>
